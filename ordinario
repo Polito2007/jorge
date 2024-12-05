@@ -1,0 +1,67 @@
+# Clases del sistema de gestión de libros
+
+class Catalogue:
+    # Constructor de la clase (nota: _init_ estaba mal escrito como _init_)
+    def __init__(self):  # Corrección de "_init_"
+        self.books = []  # Lista que almacena los libros del catálogo
+
+    # Método para buscar libros por autor
+    def search_author(self, author):
+        # Encapsulamiento: Oculta la lógica interna del manejo de libros
+        return [book for book in self.books if book['author'] == author]
+
+    # Método para actualizar el catálogo
+    def update_catalogue(self, book):
+        self.books.append(book)
+
+
+class AvailableBooks:
+    # Constructor de la clase
+    def __init__(self):  # Corrección de "_init_"
+        self.available_books = []  # Lista de libros disponibles
+
+    # Método para verificar la disponibilidad de un libro por título
+    def check_availability(self, title):
+        # Encapsulamiento: Oculta la verificación de disponibilidad
+        return title in self.available_books
+
+
+class Loan:
+    # Constructor de la clase
+    def __init__(self):  # Corrección de "_init_"
+        self.loans = []  # Lista de préstamos realizados
+
+    # Método para realizar un préstamo
+    def checkout(self, user, book):
+        try:
+            # Polimorfismo: Se adapta a diferentes tipos de usuarios
+            if book not in user.borrowed_books:
+                user.borrowed_books.append(book)  # Añade el libro a los préstamos del usuario
+                self.loans.append({'user': user.name, 'book': book})  # Registra el préstamo
+            else:
+                raise Exception("Book already borrowed by user.")  # Manejo de errores: Genera excepción si ya está prestado
+        except Exception as e:
+            print(f"Error: {e}")  # Manejo de errores: Mensaje descriptivo de la excepción
+
+
+# Clase que representa a un usuario
+class User:
+    # Constructor de la clase
+    def __init__(self, name):  # Corrección de "_init_"
+        self.name = name  # Nombre del usuario
+        self.borrowed_books = []  # Lista de libros que el usuario ha tomado prestados
+
+
+# Ejemplo de uso
+catalogue = Catalogue()  # Crear una instancia de catálogo
+available_books = AvailableBooks()  # Crear una instancia de libros disponibles
+loan_system = Loan()  # Crear una instancia del sistema de préstamos
+
+# Agregar libros y usuarios al sistema
+catalogue.update_catalogue({'title': 'Book1', 'author': 'Author1'})  # Actualizar catálogo con un libro
+available_books.available_books.append('Book1')  # Agregar libro a la lista de disponibles
+user = User('John')  # Crear un usuario
+
+# Préstamo de libro
+if available_books.check_availability('Book1'):  # Verificar disponibilidad
+    loan_system.checkout(user, 'Book1')  # Realizar el préstamo
